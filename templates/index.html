@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Predicción de Ronda & MatchKills - CS:GO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Predicción de Ronda & MatchKills - CS:GO</h1>
+    <p>Completa todos los campos y obtén:</p>
+    <ul>
+      <li>Ganador de la ronda (clasificación).</li>
+      <li>MatchKills predichos (regresión).</li>
+    </ul>
+
+    <form action="/predict" method="post" novalidate>
+      <!-- Mapa -->
+      <label for="mapa">🗺️ Mapa:</label>
+      <select id="mapa" name="mapa" required>
+        <option value="" disabled selected>Selecciona un mapa</option>
+        <option value="Dust2">Dust2</option>
+        <option value="Inferno">Inferno</option>
+        <option value="Mirage">Mirage</option>
+      </select>
+
+      <!-- Equipo -->
+      <label for="equipo">🧩 Equipo:</label>
+      <select id="equipo" name="equipo" required>
+        <option value="" disabled selected>Selecciona equipo</option>
+        <option value="T">Terrorista</option>
+        <option value="CT">Antiterrorista</option>
+      </select>
+
+      <!-- Round Kills -->
+      <label for="kills">🔫 Round Kills:</label>
+      <input type="number" id="kills" name="kills" min="0" max="10" required placeholder="Ej: 4">
+
+      <!-- Round Deaths -->
+      <label for="deaths">☠️ Round Deaths:</label>
+      <input type="number" id="deaths" name="deaths" min="0" max="10" required placeholder="Ej: 2">
+
+      <!-- KDR -->
+      <label for="kdr">📈 Ratio K/D (KDR):</label>
+      <input type="number" step="0.01" id="kdr" name="kdr" min="0" max="5" required placeholder="Ej: 1.25">
+
+      <!-- Equipamiento -->
+      <label for="equip_val">💰 Valor de Equip. Inicial:</label>
+      <input type="number" id="equip_val" name="equip_val" min="0" max="20000" required placeholder="Ej: 12000">
+
+      <button type="submit">🚀 Predecir</button>
+    </form>
+
+    <!-- Mostrar resultados -->
+    {% if winner and matchkills is defined %}
+      <div class="resultado">
+        <h2>🏆 Ganador de la ronda: <strong>{{ winner }}</strong> ({{ confidence }}% confianza)</h2>
+        <h2>🔍 MatchKills predichos: <strong>{{ matchkills }}</strong></h2>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Validación JS opcional -->
+  <script>
+  document.querySelector("form").addEventListener("submit", function(e) {
+    const fields = this.querySelectorAll("select, input");
+    let ok = true;
+    fields.forEach(f => {
+      if (!f.checkValidity()) {
+        ok = false;
+        f.style.border = "2px solid red";
+      } else {
+        f.style.border = "";
+      }
+    });
+    if (!ok) {
+      e.preventDefault();
+      alert("Por favor, completa correctamente todos los campos.");
+    }
+  });
+  </script>
+</body>
+</html>
